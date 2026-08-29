@@ -1,0 +1,9 @@
+run userservice in the same network
+
+docker run -d ^
+--name userservice ^
+--network humancloud-network ^
+-p 4041:4041 ^
+userservice:1.0
+
+to restart userService -----> docker restart userservice

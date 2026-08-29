@@ -1,0 +1,142 @@
+Step 1: Create the Docker network
+---------------------------------------
+docker network create humancloud-network
+
+A Docker network is a private network that lets containers communicate with each other using their container names instead of changing IP addresses.
+
+command to explicitely remove n/w -----> docker network rm humancloud-network
+
+Step 2: verify 
+---------------------------------------
+docker network ls
+
+from next time onwards---->docker start mysql
+                           docker start kafka
+                           docker start userservice
+
+Step 3: Start MySQL
+---------------------------------------
+docker run -d ^
+--name mysql ^
+--network humancloud-network ^
+-p 3306:3306 ^
+-e MYSQL_ROOT_PASSWORD=112233 ^
+-e MYSQL_DATABASE=humancloud ^
+mysql:8.0
+
+next time ----> docker start MySQL
+
+if we remove container then data will be lost----->docker rm -f mysql
+
+Step 4: Check container
+--------------------------------------
+docker ps
+
+Step 5: Check Logs
+--------------------------------------
+docker logs -f MySQL
+
+ready for connections
+
+Step 6:Verify MySQL
+--------------------------------------
+docker exec -it mysql mysql -uroot -p112233
+
+inside MySQL-> SHOW DATABASES;
+see->humancloud
+
+exit
+
+Step 7: Start Kafka
+---------------------------------------
+
+docker run -d ^
+--name kafka ^
+--network humancloud-network ^
+-p 9092:9092 ^
+-e KAFKA_NODE_ID=1 ^
+-e KAFKA_PROCESS_ROLES=broker,controller ^
+-e KAFKA_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093 ^
+-e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092 ^
+-e KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER ^
+-e KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT ^
+-e KAFKA_CONTROLLER_QUORUM_VOTERS=1@localhost:9093 ^
+-e KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1 ^
+apache/kafka:4.1.0
+
+Step 8: Check container
+--------------------------------------
+docker ps
+
+Step 9: Check Logs
+--------------------------------------
+docker logs -f kafka
+
+Wait until Kafka finishes starting.
+
+Step 10: Build UserService
+-------------------------------------
+D:\Humancloud\UserService press cmd
+
+generate jar -----> mvn clean package
+build docker image-----> docker build -t userservice:1.0 .
+verify -----> docker images
+
+Step 11: Start UserService
+------------------------------------
+
+docker run -d ^
+--name userservice ^
+--network humancloud-network ^
+-p 4041:4041 ^
+userservice:1.0
+
+verify -----> docker ps
+check log -----> docker logs -f userservice  
+                 Wait until you see Spring Boot finish starting.
+
+
+Complete Architecture
+---------------------------
+Start Docker
+     │
+     ▼
+Create Network
+     │
+     ▼
+Start MySQL
+     │
+     ▼
+Start Kafka
+     │
+     ▼
+Build UserService
+     │
+     ▼
+Run UserService
+     │
+     ▼
+UserService connects to:
+     ├── mysql
+     └── kafka
+     │
+     ▼
+Ready for requests
+
+
+Start ProjectService
+-------------------------
+docker run -d ^
+--name projectservice ^
+--network humancloud-network ^
+-p 4043:4043 ^
+projectservice:1.0
+
+
+Start TaskService
+-------------------------
+docker run -d ^
+--name taskservice ^
+--network humancloud-network ^
+-p 4042:4042 ^
+taskservice:1.0
