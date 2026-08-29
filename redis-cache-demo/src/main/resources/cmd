@@ -1,0 +1,8 @@
+#to see keys
+docker exec -it redis-demo redis-cli
+
+KEYS *
+
+GET "products::1" //to see data
+GET "products::2" //to see data
+ 

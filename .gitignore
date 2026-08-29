@@ -1,0 +1,32 @@
+# Eclipse
+.metadata/
+.settings/
+.classpath
+.project
+
+# IntelliJ
+.idea/
+*.iml
+
+# Maven
+target/
+
+# Gradle
+.gradle/
+build/
+
+# Java
+*.class
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Existing separate Git repository
+github-actions-demo/
+
+# Internship notes
+Notes/
