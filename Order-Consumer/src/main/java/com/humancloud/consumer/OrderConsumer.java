@@ -1,3 +1,66 @@
+/*
+package com.humancloud.consumer;
+
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.stereotype.Service;
+
+import com.humancloud.entity.Order;
+import com.humancloud.event.OrderCreatedEvent;
+import com.humancloud.repository.OrderRepository;
+
+@Service
+public class OrderConsumer {
+
+	private final OrderRepository orderRepository;
+
+	public OrderConsumer(OrderRepository orderRepository) {
+		this.orderRepository = orderRepository;
+	}
+
+	@RetryableTopic(
+			attempts = "4",
+			backoff = @Backoff(delay = 1000)
+	)
+	@KafkaListener(
+			topics = "order-created",
+			groupId = "order-consumer-group",
+	containerFactory = "kafkaListenerContainerFactory"
+	)
+	public void consumeOrder(OrderCreatedEvent event) {
+		try
+		{
+        	Thread.sleep(5000);
+        }
+		catch (InterruptedException e)
+		{
+            throw new RuntimeException(e);
+        }
+
+		System.out.println("Processing Order: " + event.getOrderId());
+
+		if ("FAIL".equalsIgnoreCase(event.getProduct())) {
+			throw new RuntimeException("Simulated database failure");
+		}
+
+		Order order = new Order();
+
+		order.setOrderId(event.getOrderId());
+		order.setCustomerName(event.getCustomerName());
+		order.setProduct(event.getProduct());
+		order.setAmount(event.getAmount());
+
+		orderRepository.save(order);
+
+		System.out.println("Order saved to MySQL: " + event.getOrderId());
+	}
+}
+
+
+
+*/
+
 package com.humancloud.consumer;
 
 import java.util.ArrayList;
@@ -46,7 +109,7 @@ public class OrderConsumer {
 		{
 			System.out.println("Processing Order: " + event.getOrderId());
 
-			if ("FAIL".equalsIgnoreCase(event.getProduct())) 
+			if ("FAIL".equalsIgnoreCase(event.getProduct()))
 			{
 				throw new RuntimeException("Simulated database failure");
 			}

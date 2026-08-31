@@ -1,3 +1,4 @@
+/*
 package com.humancloud.consumer;
 
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,4 +16,4 @@ public class OrderDltConsumer
 		System.out.println("DLT RECEIVED - Customer: " + event.getCustomerName());
 		System.out.println("DLT RECEIVED - Product: " + event.getProduct());
 	}
-}
+}*/
